@@ -2,9 +2,11 @@ import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { ThrottlerModule } from '@nestjs/throttler';
+import { LoggerModule } from './configs/logger/logger.module';
 
 @Module({
   imports: [
+    LoggerModule,
     //Applying RateLimitter
     ThrottlerModule.forRoot([
       {
