@@ -3,6 +3,8 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { ThrottlerModule } from '@nestjs/throttler';
 import { LoggerModule } from './configs/logger/logger.module';
+import { ConfigModule } from '@nestjs/config';
+import configuration from './configs/configuration';
 
 @Module({
   imports: [
@@ -25,6 +27,10 @@ import { LoggerModule } from './configs/logger/logger.module';
         limit: 100,
       },
     ]),
+    //Loading Configuration
+    ConfigModule.forRoot({
+      load: [configuration],
+    }),
   ],
   controllers: [AppController],
   providers: [AppService],
