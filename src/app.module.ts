@@ -3,8 +3,10 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { ThrottlerModule } from '@nestjs/throttler';
 import { LoggerModule } from './configs/logger/logger.module';
-import { ConfigModule } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import configuration from './configs/configuration';
+import databaseConfig from './configs/database/database.config';
+import { TypeOrmModule } from '@nestjs/typeorm';
 
 @Module({
   imports: [
@@ -29,7 +31,29 @@ import configuration from './configs/configuration';
     ]),
     //Loading Configuration
     ConfigModule.forRoot({
-      load: [configuration],
+      cache: true,
+      load: [configuration, databaseConfig],
+    }),
+    //Database Configuration
+    TypeOrmModule.forRootAsync({
+      imports: [ConfigModule],
+      useFactory: (configService: ConfigService) => {
+        const dbConfig = configService.get('database');
+        return {
+          type: 'postgres',
+          host: dbConfig.host,
+          port: dbConfig.port,
+          username: dbConfig.username,
+          password: dbConfig.password,
+          database: dbConfig.database,
+          entities: [],
+          synchronize: true,
+          logNotifications: true,
+          logger: 'advanced-console',
+          logging: true,
+        };
+      },
+      inject: [ConfigService],
     }),
   ],
   controllers: [AppController],
