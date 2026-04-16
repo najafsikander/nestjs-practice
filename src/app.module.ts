@@ -3,10 +3,12 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { ThrottlerModule } from '@nestjs/throttler';
 import { LoggerModule } from './configs/logger/logger.module';
-import { ConfigModule, ConfigService } from '@nestjs/config';
+import { ConfigModule } from '@nestjs/config';
 import configuration from './configs/configuration';
-import databaseConfig from './configs/database/database.config';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import databaseConfig from './database/config/database.config';
+import { TypeOrmConfigService } from './database/typeorm-config.service';
+import { DataSource, DataSourceOptions } from 'typeorm';
 
 @Module({
   imports: [
@@ -32,28 +34,16 @@ import { TypeOrmModule } from '@nestjs/typeorm';
     //Loading Configuration
     ConfigModule.forRoot({
       cache: true,
+      isGlobal: true,
       load: [configuration, databaseConfig],
+      envFilePath: ['.env'],
     }),
     //Database Configuration
     TypeOrmModule.forRootAsync({
-      imports: [ConfigModule],
-      useFactory: (configService: ConfigService) => {
-        const dbConfig = configService.get('database');
-        return {
-          type: 'postgres',
-          host: dbConfig.host,
-          port: dbConfig.port,
-          username: dbConfig.username,
-          password: dbConfig.password,
-          database: dbConfig.database,
-          entities: [],
-          synchronize: true,
-          logNotifications: true,
-          logger: 'advanced-console',
-          logging: true,
-        };
+      useClass: TypeOrmConfigService,
+      dataSourceFactory: async (options: DataSourceOptions) => {
+        return new DataSource(options).initialize();
       },
-      inject: [ConfigService],
     }),
   ],
   controllers: [AppController],
