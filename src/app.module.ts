@@ -9,6 +9,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import databaseConfig from './database/config/database.config';
 import { TypeOrmConfigService } from './database/typeorm-config.service';
 import { DataSource, DataSourceOptions } from 'typeorm';
+import { HomeModule } from './home/home.module';
 
 @Module({
   imports: [
@@ -45,6 +46,7 @@ import { DataSource, DataSourceOptions } from 'typeorm';
         return new DataSource(options).initialize();
       },
     }),
+    HomeModule,
   ],
   controllers: [AppController],
   providers: [AppService],

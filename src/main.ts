@@ -1,7 +1,6 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import helmet from 'helmet';
-import { ConsoleLogger } from '@nestjs/common';
 import { LoggerService } from './configs/logger/logger.service';
 
 async function bootstrap() {
@@ -9,12 +8,6 @@ async function bootstrap() {
     cors: true,
     bodyParser: true,
     bufferLogs: true,
-    // logger: new ConsoleLogger({
-    //   prefix: 'NestJs-Practice',
-    //   timestamp: true,
-    //   logLevels: ['log', 'fatal', 'error', 'warn', 'debug', 'verbose'],
-    //   compact: true,
-    // }),
   });
 
   app.use(helmet());
