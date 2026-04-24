@@ -1,6 +1,4 @@
 import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
 import { ThrottlerModule } from '@nestjs/throttler';
 import { LoggerModule } from './configs/logger/logger.module';
 import { ConfigModule } from '@nestjs/config';
@@ -48,7 +46,7 @@ import { HomeModule } from './home/home.module';
     }),
     HomeModule,
   ],
-  controllers: [AppController],
-  providers: [AppService],
+  controllers: [],
+  providers: [],
 })
 export class AppModule {}
